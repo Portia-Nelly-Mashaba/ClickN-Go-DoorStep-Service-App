@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1007793499453",
+    "project_id": "doorstep-service-app",
+    "storage_bucket": "doorstep-service-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007793499453:android:c654882f33f8790b81a954",
+        "android_client_info": {
+          "package_name": "com.playseekdev.doorstep_service_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007793499453-ma9a82b7en7a56hjs88rs7hh2hc6ogql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.playseekdev.doorstep_service_app",
+            "certificate_hash": "9c69b4b10bd9a58d13478abdc55d254df75b4cef"
+          }
+        },
+        {
+          "client_id": "1007793499453-6h012nb6aud0pdl7ei1560parnetj9m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA33sBnwIoYjoIYKVmniBHl5Bhd-d_Cbfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007793499453-6h012nb6aud0pdl7ei1560parnetj9m9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
