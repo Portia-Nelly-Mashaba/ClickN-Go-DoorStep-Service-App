@@ -14,11 +14,16 @@ class ServiceProviderAuth extends StatelessWidget {
       builder: (context, snapshot) {
         // User is not signed in
         if (!snapshot.hasData) {
-          return SignInScreen(providerConfigs: []);
+          return SignInScreen(providerConfigs: [
+            EmailProviderConfiguration(),
+            GoogleProviderConfiguration(
+                clientId: '1:1007793499453:android:430c33032d118bb181a954'),
+            PhoneProviderConfiguration(),
+          ]);
         }
 
         // Render your application if authenticated
-        return Text('Registered');
+        return Text('Authenticated');
       },
     );
   }
