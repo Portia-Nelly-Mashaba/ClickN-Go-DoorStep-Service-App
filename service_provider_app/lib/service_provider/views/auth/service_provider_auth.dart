@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:service_provider_app/service_provider/views/auth/service_provider_register_screen.dart';
 
 class ServiceProviderAuth extends StatelessWidget {
   const ServiceProviderAuth({super.key});
@@ -23,7 +24,7 @@ class ServiceProviderAuth extends StatelessWidget {
         }
 
         // Render your application if authenticated
-        return Text('Authenticated');
+        return ServiceProviderScreen();
       },
     );
   }
