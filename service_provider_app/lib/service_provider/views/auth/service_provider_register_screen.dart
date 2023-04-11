@@ -13,10 +13,20 @@ class ServiceProviderScreen extends StatefulWidget {
 }
 
 class _ServiceProviderScreenState extends State<ServiceProviderScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final ServiceProviderController _servicerProviderController =
       ServiceProviderController();
+
+  late String businessName;
+
+  late String email;
+
+  late String phoneNumber;
+
+  late String taxNumber;
 
   late String countryValue;
 
@@ -48,6 +58,23 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen> {
     'YES',
     'NO',
   ];
+
+  _saveServiceProviderDetail() async {
+    if (_formKey.currentState!.validate()) {
+      await _servicerProviderController.registerServiceProvider(
+          businessName,
+          email,
+          phoneNumber,
+          countryValue,
+          stateValue,
+          cityValue,
+          _taxStatus!,
+          taxNumber,
+          _image);
+    } else {
+      print('bad');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,115 +125,160 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen> {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.name,
-                  decoration: InputDecoration(
-                    labelText: 'Business Name',
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email Address',
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: SelectState(
-                    onCountryChanged: (value) {
-                      setState(() {
-                        countryValue = value;
-                      });
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    onChanged: (value) {
+                      businessName = value;
                     },
-                    onStateChanged: (value) {
-                      setState(() {
-                        stateValue = value;
-                      });
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Business Name is Empty';
+                      } else {
+                        return null;
+                      }
                     },
-                    onCityChanged: (value) {
-                      setState(() {
-                        cityValue = value;
-                      });
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: 'Business Name',
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    onChanged: (value) {
+                      email = value;
                     },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Email Address is Empty';
+                      } else {
+                        return null;
+                      }
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Email Address',
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Tax Registered?',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Flexible(
-                        child: Container(
-                          width: 100,
-                          child: DropdownButtonFormField(
-                              hint: Text('Select'),
-                              items: _taxOption.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                    value: value, child: Text(value));
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _taxStatus = value;
-                                });
-                              }),
-                        ),
-                      )
-                    ],
+                  SizedBox(
+                    height: 10,
                   ),
-                ),
-                if (_taxStatus == 'YES')
+                  TextFormField(
+                    onChanged: (value) {
+                      phoneNumber = value;
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Phone Number is Empty';
+                      } else {
+                        return null;
+                      }
+                    },
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                    ),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(labelText: 'Tax Number'),
+                    padding: const EdgeInsets.all(14.0),
+                    child: SelectState(
+                      onCountryChanged: (value) {
+                        setState(() {
+                          countryValue = value;
+                        });
+                      },
+                      onStateChanged: (value) {
+                        setState(() {
+                          stateValue = value;
+                        });
+                      },
+                      onCityChanged: (value) {
+                        setState(() {
+                          cityValue = value;
+                        });
+                      },
                     ),
                   ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                    height: 30,
-                    width: MediaQuery.of(context).size.width - 40,
-                    decoration: BoxDecoration(
-                      color: Colors.yellow.shade900,
-                      borderRadius: BorderRadius.circular(
-                        10,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Tax Registered?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Flexible(
+                          child: Container(
+                            width: 100,
+                            child: DropdownButtonFormField(
+                                hint: Text('Select'),
+                                items: _taxOption.map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                  return DropdownMenuItem<String>(
+                                      value: value, child: Text(value));
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _taxStatus = value;
+                                  });
+                                }),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  if (_taxStatus == 'YES')
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        onChanged: (value) {
+                          taxNumber = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Tax Number is Empty';
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: InputDecoration(labelText: 'Tax Number'),
                       ),
                     ),
-                    child: Center(
-                      child: Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      _saveServiceProviderDetail();
+                    },
+                    child: Container(
+                      height: 30,
+                      width: MediaQuery.of(context).size.width - 40,
+                      decoration: BoxDecoration(
+                        color: Colors.yellow.shade900,
+                        borderRadius: BorderRadius.circular(
+                          10,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         )

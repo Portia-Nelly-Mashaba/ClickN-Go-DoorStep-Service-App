@@ -1,9 +1,28 @@
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ServiceProviderController {
-//FUNCTION TO STORE IMAGE IN FIREBASE STORE
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+//FUNCTION TO STORE IMAGE IN FIREBASE STORAGE
+  _uploadServiceProviderImageToStorage(Uint8List? image) async {
+    Reference ref =
+        _storage.ref().child('storeImage').child(_auth.currentUser!.uid);
+
+    UploadTask uploadTask = ref.putData(image!);
+
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+
+    return downloadUrl;
+  }
+
+//FUNCTION TO STORE IMAGE IN FIREBASE STORAGE ENDS HERE
 
   //FUNCTION TO PICK BUSINESS IMAGE
   pickBusinessImage(ImageSource source) async {
@@ -20,38 +39,45 @@ class ServiceProviderController {
 
   //FUNCTION TO PICK BUSINESS IMAGE ENDS HERE
 
-  String registerServiceProvider(
+  //FUNCTION TO SAVE SERVICE PROVIDER DATA
+
+  Future<String> registerServiceProvider(
     String businessName,
     String email,
     String phoneNumber,
     String countryValue,
     String stateValue,
     String cityValue,
-    String taxOption,
+    String taxRegistered,
     String taxNumber,
     Uint8List? image,
-  ) {
+  ) async {
     String results = 'some error occured';
 
     try {
-      if (businessName.isNotEmpty &&
-          email.isNotEmpty &&
-          phoneNumber.isNotEmpty &&
-          countryValue.isNotEmpty &&
-          stateValue.isNotEmpty &&
-          cityValue.isNotEmpty &&
-          taxOption.isNotEmpty &&
-          taxNumber.isNotEmpty &&
-          image != null) {
-        //SAVE DATA TO CLOUD FIRESTORE
-      } else {
-        results = 'Fields must not be empty';
-      }
-      ;
+      String storeImage = await _uploadServiceProviderImageToStorage(image);
+      //SAVE DATA TO CLOUD FIRESTORE
+
+      await _firestore
+          .collection('serviceProviders')
+          .doc(_auth.currentUser!.uid)
+          .set({
+        'businessName': businessName,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'country': countryValue,
+        'state': stateValue,
+        'city': cityValue,
+        'taxRegistered': taxRegistered,
+        'taxNumber': taxNumber,
+        'storeImage': storeImage,
+        'approved': false,
+      });
     } catch (e) {
       results = e.toString();
     }
 
     return results;
   }
+  //FUNCTION TO SAVE SERVICE PROVIDER DATA ENDS HERE
 }
