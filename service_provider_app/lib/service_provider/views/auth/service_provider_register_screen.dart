@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -60,19 +61,32 @@ class _ServiceProviderScreenState extends State<ServiceProviderScreen> {
   ];
 
   _saveServiceProviderDetail() async {
+    EasyLoading.show(status: 'PLEASE WAIT');
     if (_formKey.currentState!.validate()) {
-      await _servicerProviderController.registerServiceProvider(
-          businessName,
-          email,
-          phoneNumber,
-          countryValue,
-          stateValue,
-          cityValue,
-          _taxStatus!,
-          taxNumber,
-          _image);
+      await _servicerProviderController
+          .registerServiceProvider(
+              businessName,
+              email,
+              phoneNumber,
+              countryValue,
+              stateValue,
+              cityValue,
+              _taxStatus!,
+              taxNumber,
+              _image)
+          .whenComplete(() {
+        EasyLoading.dismiss();
+
+        setState(() {
+          _formKey.currentState!.reset();
+
+          _image = null;
+        });
+      });
     } else {
       print('bad');
+
+      EasyLoading.dismiss();
     }
   }
 
